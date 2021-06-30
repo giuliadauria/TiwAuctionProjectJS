@@ -1,0 +1,59 @@
+@charset "ISO-8859-1";
+body {
+	background: #94da83;
+}
+h1, h2 {
+	text-align: center;
+}
+.left {
+	text-align: left;
+}
+.right {
+	float: right;
+}
+table.home {
+	 margin: auto;
+  	 height: 75%;
+ 	 border: 10px solid black;
+ 	 padding: 10px;
+}
+table.home th {
+  	 background: #a9a941;
+ 	 text-align: center;
+	 margin: auto;
+	 border: 5px solid black;
+	 font-size: 1500%;
+}
+table.list {
+	 margin: auto;
+  	 width: 30%;
+ 	 border: 3px solid black;
+}
+table.list th {
+	background: #a9a941;
+	text-align: center;
+	margin: auto;
+	border: 1px solid black;
+}
+table.list tr, table.list td {
+	text-align: center;
+	margin: auto;
+	border: 1px solid black;
+}
+table.list tr:nth-child(even) {
+	background: #CCC;
+}
+table.list tr:nth-child(odd) {
+	background: #FFF;
+}
+table.center {
+	margin: auto;
+}
+form.center, p.center {
+	text-align: center;
+}
+img.fixed {
+	box-shadow: 10px 10px 5px #000;
+	border-radius: 8px;
+	height: 192px;
+}
