@@ -1,18 +1,26 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-	<head>
+<html>
+<head>
 		<meta charset="ISO-8859-1">
 		<title>Login page</title>
 		<link rel="icon" href="https://image.flaticon.com/icons/png/512/783/783247.png">
 		<link rel="stylesheet" type="text/css" media="all" href="css/style.css">
-	</head>
-	<body>
+		<script src="WEB-INF/utils.js" type="text/javascript"></script>
+		
+		
+		<script src="WEB-INF/loginManagement.js" charset="utf-8" defer></script>
+		
+		
+</head>
+<body>
 		<h1>Welcome to the Auction Application</h1>
-		<form class="center" action="CheckLogin" method="POST">
+		
+		<form action="#">
+		<fieldset>
 			Username: <input type="text" name="username" required><br>
 			Password: <input type="password" name="pwd" required><br>
-			<input type="submit" value="login">
-			<p th:text=" ${errorMsg}"></p>
-		</form>
+			<input id="loginbutton" type="button" value="login">
+			<p id="errormessage"></p>
+		</fieldset></form>
 	</body>
 </html>
