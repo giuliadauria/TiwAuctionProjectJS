@@ -1,16 +1,23 @@
-//var state = localStorage.getItem('state'),
-var state = "sell",
+var state = localStorage.getItem('state'),
 	x,
 	id,
 	opened = [],
 	serverPath = "http://localhost:8080/TIW-AuctionProjectJS",
+	buyButton = document.getElementById("buy"),
+	sellButton = document.getElementById("sell"),
+	logoutButton = document.getElementById("logout"),
 	mainTitle = document.getElementById("mainTitle"),
   	secondaryTitle1 = document.getElementById("secondaryTitle1"),
   	secondaryTitle2 = document.getElementById("secondaryTitle2"),
   	openAuctionsList = document.getElementById("open"),
-  	wonAuctionsList = document.getElementById("won");
+  	wonAuctionsList = document.getElementById("won"),
+  	formHtml = document.getElementById("id_form"),
+  	researchForm = document.getElementById("id_form");
 
 window.addEventListener("load", loadPage, false);
+logoutButton.addEventListener("click", logout, false);
+buyButton.addEventListener("click", pressedBuy, false);
+sellButton.addEventListener("click", pressedSell, false);
 
 function loadPage() {
 	console.log(state);
@@ -21,6 +28,7 @@ function loadPage() {
 }
 
 function loadBuyPage() {
+	state = "buy";
 	mainTitle.textContent = "Buy auction page";
 	secondaryTitle1.textContent = "Open auctions";
 	secondaryTitle2.textContent = "Won auctions";
@@ -40,7 +48,6 @@ function updateBuyPage() {
 			anchor;
 			
 		for(var i=0; i<openAuctions.length; i++) {
-		console.log(sessionStorage.getItem('username'));
 			if(openAuctions[i].seller !== sessionStorage.getItem('username')) {
 				opened[openAuctions[i].auctionId] = false;
 				row = document.createElement("tr");
@@ -99,6 +106,7 @@ function updateBuyPage() {
 }
 
 function loadSellPage() {
+	state = "sell";
 	mainTitle.textContent = "Sell auction page";
 	secondaryTitle1.textContent = "Open auctions";
 	secondaryTitle2.textContent = "Closed auctions";
@@ -175,7 +183,6 @@ function updateSellPage() {
 		}
 		
 	formTitle.textContent = "Create an Auction:";
-	var formHtml = document.getElementById("id_form");
 	var br = document.createElement("br"); 
 	
 	var form = document.createElement("form");
@@ -299,6 +306,9 @@ function updateAuctionDetails() {
 		p = document.createElement("p");
 		p.textContent = "Initial price: " + auctionDetails.initialPrice + " raise: " + auctionDetails.raise;
 		td.appendChild(p);
+		
+		// bid form
+		
 		bidTable = document.createElement("table");
 		bidThead = document.createElement("thead");
 		bidTable.appendChild(bidThead);
@@ -342,4 +352,43 @@ function closeAuctionDetails() {
 	cell.setAttribute('id', "open" + id);
 	td.replaceWith(cell);
 	opened[id] = false;
+}
+
+function logout() {
+	window.location.href = "Logout";
+}
+
+function pressedBuy() {
+	if(state === "sell") {
+		openAuctionsList.innerHTML = '';
+  		wonAuctionsList.innerHTML = '';
+  		mainTitle.innerHTML = '';
+  		secondaryTitle1.innerHTML = '';
+  		secondaryTitle2.innerHTML = '';
+  		formTitle.innerHTML = '';
+  		formHtml.innerHTML = '';
+  		researchForm.innerHTML = '';
+  		state = "buy";
+  		loadPage();
+	}
+}
+
+function pressedSell() {
+	if(state === "buy") {
+		openAuctionsList.innerHTML = '';
+  		wonAuctionsList.innerHTML = '';
+  		mainTitle.innerHTML = '';
+  		secondaryTitle1.innerHTML = '';
+  		secondaryTitle2.innerHTML = '';
+  		formTitle.innerHTML = '';
+  		formHtml.innerHTML = '';
+  		researchForm.innerHTML = '';
+  		state = "sell";
+  		loadPage();
+	}
+}
+function empty(element) {
+	while (element.firstChild) {
+    	element.firstChild.remove()
+	}
 }
