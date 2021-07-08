@@ -13,7 +13,9 @@
             var message = x.responseText;
             switch (x.status) {
               case 200:
-            	sessionStorage.setItem('username', message);
+				console.log(message);
+				//message = JSON.stringify(message);
+            	sessionStorage.setItem('username', message.substring(0, message.length - 1));
                 window.location.href = "Home.html";
                 break;
               case 400: // bad request
