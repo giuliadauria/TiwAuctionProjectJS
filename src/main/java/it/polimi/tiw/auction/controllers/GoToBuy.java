@@ -19,6 +19,9 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import it.polimi.tiw.auction.utils.ConnectionHandler;
 import it.polimi.tiw.auction.beans.OpenAuction;
 import it.polimi.tiw.auction.beans.User;
@@ -86,14 +89,21 @@ public class GoToBuy extends HttpServlet {
 					return;
 				}
 
-				// Redirect to the Home page and add missions to the parameters
+				/*// Redirect to the Home page and add missions to the parameters
 				String path = "/WEB-INF/Buy.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 				ctx.setVariable("keyword", keyword);
 				ctx.setVariable("openAuctions", openAuctions);
 				ctx.setVariable("wonAuctions", wonAuctions);
-				templateEngine.process(path, ctx, response.getWriter());
+				templateEngine.process(path, ctx, response.getWriter());*/
+				
+				Gson gson = new GsonBuilder().create();
+				String json = gson.toJson(openAuctions);
+				
+				response.setContentType("application/json");
+				response.setCharacterEncoding("UTF-8");
+				response.getWriter().write(json);
 	}
 
 	/**

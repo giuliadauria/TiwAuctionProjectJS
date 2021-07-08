@@ -20,6 +20,9 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import it.polimi.tiw.auction.beans.AuctionDetails;
 import it.polimi.tiw.auction.dao.AuctionDAO;
 import it.polimi.tiw.auction.utils.ConnectionHandler;
@@ -95,13 +98,20 @@ public class GetAuctionDetails extends HttpServlet {
 				return;
 			}
 		}
-		String path = "/WEB-INF/Details.html";
+		/*String path = "/WEB-INF/Details.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("closeerror", request.getParameter("closeerror"));
 		ctx.setVariable("biderror", request.getParameter("biderror"));
 		ctx.setVariable("auctionDetails", auctionDetails);
-		templateEngine.process(path, ctx, response.getWriter());
+		templateEngine.process(path, ctx, response.getWriter());*/
+		
+		Gson gson = new GsonBuilder().create();
+		String json = gson.toJson(auctionDetails);
+		
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(json);
 	}
 
 	/**

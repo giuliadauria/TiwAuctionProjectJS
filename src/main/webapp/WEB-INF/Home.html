@@ -1,22 +1,28 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html>
 	<head>
 		<meta charset="ISO-8859-1">
 		<title>Home</title>
 		<link rel="icon" href="https://image.flaticon.com/icons/png/512/783/783247.png">
-		<link rel="stylesheet" type="text/css" media="all" href="css/style.css" th:href="@{/css/style.css}" />
+		<link rel="stylesheet" type="text/css" media="all" href="css/style.css">
+		<script src="auctions.js" charset="utf-8" defer></script>
 	</head>
 	<body>
 		<div class="right">
 			<a href="Logout">Logout</a>
-		</div><br><br><br><br><br><br><br><br><br>
-		<table class="home">
-			<thead>
-				<tr>
-					<th><a href="GoToSell">SELL</a></th>
-					<th><a href="GoToBuy">BUY</a></th>
-				</tr>
-			</thead>
-		</table>
+		</div>
+	<h1>Sell Auction Page</h1>
+	<h2>Open Auctions</h2>
+	<table class="list">
+		<thead>
+			<tr>
+				<th>AuctionId</th>
+				<th>ItemName</th>
+				<th>BestOffer</th>
+				<th>RemainingTime</th>
+			</tr>
+		</thead>
+		<tbody id="open"></tbody>
+	</table>
 	</body>
 </html>

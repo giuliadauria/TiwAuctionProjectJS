@@ -24,6 +24,11 @@ table.home th {
 	 border: 5px solid black;
 	 font-size: 1500%;
 }
+table.sublist {
+	margin: auto;
+  	 width: 75%;
+ 	 border: 3px solid black;
+}
 table.list {
 	 margin: auto;
   	 width: 30%;
