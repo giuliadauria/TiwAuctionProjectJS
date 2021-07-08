@@ -89,7 +89,7 @@ public class GoToBuy extends HttpServlet {
 					return;
 				}
 
-				/*// Redirect to the Home page and add missions to the parameters
+				/* Redirect to the Home page and add missions to the parameters
 				String path = "/WEB-INF/Buy.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -99,7 +99,10 @@ public class GoToBuy extends HttpServlet {
 				templateEngine.process(path, ctx, response.getWriter());*/
 				
 				Gson gson = new GsonBuilder().create();
-				String json = gson.toJson(openAuctions);
+				List<Object> list= new ArrayList<>();
+				list.add(openAuctions);
+				list.add(wonAuctions);
+				String json = gson.toJson(list);
 				
 				response.setContentType("application/json");
 				response.setCharacterEncoding("UTF-8");

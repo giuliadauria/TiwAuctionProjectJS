@@ -1,31 +1,129 @@
-var x,
+var state = localStorage.getItem('state'),
+	x,
 	id,
 	opened = [],
 	serverPath = "http://localhost:8080/TIW-AuctionProjectJS",
-  	listaOpenAuctions = document.getElementById("open");
+	mainTitle = document.getElementById("mainTitle"),
+  	secondaryTitle1 = document.getElementById("secondaryTitle1"),
+  	secondaryTitle2 = document.getElementById("secondaryTitle2"),
+  	openAuctionsList = document.getElementById("open"),
+  	wonAuctionsList = document.getElementById("won");
 
-window.addEventListener("load", loadOpenAuctions, false);
-listaOpenAuctions.addEventListener("change", loadOpenAuctions, false);
+window.addEventListener("load", loadPage, false);
 
+function loadPage() {
+	console.log(state);
+	if(state === "sell")
+		loadSellPage();
+	else if (state === undefined || state === null || state === "buy")
+		loadBuyPage();
+}
 
-function loadOpenAuctions() {
+function loadBuyPage() {
+	mainTitle.textContent = "Buy auction page";
+	secondaryTitle1.textContent = "Open auctions";
+	secondaryTitle2.textContent = "Won auctions";
   	x = new XMLHttpRequest();
- 	x.onreadystatechange = updateOpenAuctions;
+ 	x.onreadystatechange = updateBuyPage;
   	x.open("GET", serverPath + "/GoToBuy");
   	x.send();
 }
 
-function updateOpenAuctions() {
+function updateBuyPage() {
     if(x.readyState == 4 && x.status == 200) {
-		var openAuctions = JSON.parse(x.response),
+		var list = JSON.parse(x.response),
+			openAuctions = list[0],
+			wonAuctions = list[1],
 			row,
 			cell,
 			anchor;
+			
+		for(var i=0; i<openAuctions.length; i++) {
+		console.log(sessionStorage.getItem('username'));
+			if(openAuctions[i].seller !== sessionStorage.getItem('username')) {
+				opened[openAuctions[i].auctionId] = false;
+				row = document.createElement("tr");
+				cell = document.createElement("td");
+				cell.textContent = openAuctions[i].auctionId;
+				row.appendChild(cell);
+				cell = document.createElement("td");
+				cell.textContent = openAuctions[i].seller;
+				row.appendChild(cell);
+				cell = document.createElement("td");
+				cell.textContent = openAuctions[i].itemName;
+				row.appendChild(cell);
+				cell = document.createElement("td");
+				cell.textContent = openAuctions[i].bestOffer;
+				row.appendChild(cell);
+				cell = document.createElement("td");
+				cell.textContent = openAuctions[i].remainingTime;
+				row.appendChild(cell);
+				cell = document.createElement("td");
+				anchor = document.createElement("a");
+				anchor.setAttribute('auctionId', openAuctions[i].auctionId);
+				anchor.addEventListener("click", (e) => {
+	        	  loadAuctionDetails(e.target.getAttribute("auctionId"));
+	        	}, false);
+	        	anchor.appendChild(document.createTextNode("Details"));
+	        	anchor.href = "#";
+				cell.appendChild(anchor);
+				row.appendChild(cell);
+				openAuctionsList.appendChild(row);
+				row = document.createElement("tr");
+				cell = document.createElement("td");
+				cell.setAttribute('colspan', 6);
+				cell.setAttribute('id', "open" + openAuctions[i].auctionId);
+				row.appendChild(cell);
+				openAuctionsList.appendChild(row);
+			}
+		}
+		
+		for(var i=0; i<wonAuctions.length; i++) {
+			row = document.createElement("tr");
+			cell = document.createElement("td");
+			cell.textContent = wonAuctions[i].auctionId;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = wonAuctions[i].sellerUsername;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = wonAuctions[i].itemName;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = wonAuctions[i].finalPrice;
+			row.appendChild(cell);
+			wonAuctionsList.appendChild(row);
+		}
+    }
+}
+
+function loadSellPage() {
+	mainTitle.textContent = "Sell auction page";
+	secondaryTitle1.textContent = "Open auctions";
+	secondaryTitle2.textContent = "Closed auctions";
+  	x = new XMLHttpRequest();
+ 	x.onreadystatechange = updateSellPage;
+  	x.open("GET", serverPath + "/GoToSell");
+  	x.send();
+}
+
+function updateSellPage() {
+    if(x.readyState == 4 && x.status == 200) {
+		var list = JSON.parse(x.response),
+			openAuctions = list[0],
+			closedAuctions = list[1],
+			row,
+			cell,
+			anchor;
+			
 		for(var i=0; i<openAuctions.length; i++) {
 			opened[openAuctions[i].auctionId] = false;
 			row = document.createElement("tr");
 			cell = document.createElement("td");
 			cell.textContent = openAuctions[i].auctionId;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = openAuctions[i].seller;
 			row.appendChild(cell);
 			cell = document.createElement("td");
 			cell.textContent = openAuctions[i].itemName;
@@ -46,14 +144,36 @@ function updateOpenAuctions() {
 	        anchor.href = "#";
 			cell.appendChild(anchor);
 			row.appendChild(cell);
-			listaOpenAuctions.appendChild(row);
+			openAuctionsList.appendChild(row);
 			row = document.createElement("tr");
 			cell = document.createElement("td");
-			cell.setAttribute('colspan', 4);
+			cell.setAttribute('colspan', 6);
 			cell.setAttribute('id', "open" + openAuctions[i].auctionId);
 			row.appendChild(cell);
-			listaOpenAuctions.appendChild(row);
+			openAuctionsList.appendChild(row);
 		}
+		
+		for(var i=0; i<closedAuctions.length; i++) {
+			row = document.createElement("tr");
+			cell = document.createElement("td");
+			cell.textContent = closedAuctions[i].auctionId;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = closedAuctions[i].itemName;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = closedAuctions[i].contractorUsername;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = closedAuctions[i].finalPrice;
+			row.appendChild(cell);
+			cell = document.createElement("td");
+			cell.textContent = closedAuctions[i].contractorAddress;
+			row.appendChild(cell);
+			wonAuctionsList.appendChild(row);
+		}
+		
+		//Insert Create Auction Form
     }
 }
 
@@ -95,11 +215,11 @@ function updateAuctionDetails() {
 		imgTable = document.createElement("table");
 		imgTable.setAttribute('class', "center");
 		imgTr = document.createElement("tr");
-		for(var image in auctionDetails.item.pictures) {
+		for(var i=0; i<auctionDetails.item.pictures.length; i++) {
 			imgTd = document.createElement("td");
 			img = document.createElement("img");
 			img.setAttribute('class', "fixed");
-			img.src = serverPath + "/images/" + image.pictureUrl;
+			img.src = serverPath + "/images/" + auctionDetails.item.pictures[i].pictureUrl;
 			imgTr.appendChild(imgTd.appendChild(img));
 		}
 		imgTable.appendChild(imgTr);
@@ -149,7 +269,7 @@ function closeAuctionDetails() {
 	var cell;
 	td = document.getElementById("open" + id);
 	cell = document.createElement("td");
-	cell.setAttribute('colspan', 4);
+	cell.setAttribute('colspan', 6);
 	cell.setAttribute('id', "open" + id);
 	td.replaceWith(cell);
 	opened[id] = false;

@@ -19,6 +19,9 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import it.polimi.tiw.auction.beans.ClosedAuction;
 import it.polimi.tiw.auction.beans.OpenAuction;
 import it.polimi.tiw.auction.beans.User;
@@ -83,13 +86,16 @@ public class GoToSell extends HttpServlet {
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		//Redirect to the Sell page 
-		String path = "/WEB-INF/Sell.html";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("openAuctions", openAuctions);
-		ctx.setVariable("closedAuctions", closedAuctions);
-		templateEngine.process(path, ctx, response.getWriter());
+		
+		Gson gson = new GsonBuilder().create();
+		List<Object> list= new ArrayList<>();
+		list.add(openAuctions);
+		list.add(closedAuctions);
+		String json = gson.toJson(list);
+		
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(json);
 	}
 
 	/**
