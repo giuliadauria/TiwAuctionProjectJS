@@ -1,4 +1,5 @@
-var state = localStorage.getItem('state'),
+//var state = localStorage.getItem('state'),
+var state = "sell",
 	x,
 	id,
 	opened = [],
@@ -173,7 +174,75 @@ function updateSellPage() {
 			wonAuctionsList.appendChild(row);
 		}
 		
-		//Insert Create Auction Form
+	formTitle.textContent = "Create an Auction:";
+	var formHtml = document.getElementById("id_form");
+	var br = document.createElement("br"); 
+	
+	var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", "#");
+	
+    var itemName = document.createElement("input");
+	itemName.setAttribute("id", "itemName");
+    itemName.setAttribute("type", "text");
+    itemName.setAttribute("name", "itemName");
+	itemName.setAttribute("required", "");
+	
+    var description = document.createElement("input");
+	description.setAttribute("id", "description");
+    description.setAttribute("type", "text");
+    description.setAttribute("name", "description");
+	description.setAttribute("required", "");
+	
+	var deadline = document.createElement("input");
+	deadline.setAttribute("id", "deadline");
+	deadline.setAttribute("type", "datetime-local");
+	deadline.setAttribute("name", "deadline");
+	deadline.setAttribute("required", "");
+	
+	var initialPrice = document.createElement("input");
+	initialPrice.setAttribute("id", "initialPrice");
+	initialPrice.setAttribute("type", "text");
+	initialPrice.setAttribute("name", "initialPrice");
+	initialPrice.setAttribute("required", "");
+	
+	var raise = document.createElement("input");
+	raise.setAttribute("id", "raise");
+	raise.setAttribute("type", "text");
+	raise.setAttribute("name", "raise");
+	raise.setAttribute("min", "0");
+	raise.setAttribute("required", "");
+	
+	var button = document.createElement("input");
+    button.setAttribute("type", "submit");
+    button.setAttribute("value", "Create Auction");
+	
+	form.appendChild(itemName);
+	form.appendChild(br.cloneNode()); 
+	form.appendChild(description);
+	form.appendChild(br.cloneNode()); 
+	form.appendChild(deadline);
+	form.appendChild(br.cloneNode()); 
+	form.appendChild(initialPrice);
+	form.appendChild(br.cloneNode()); 
+	form.appendChild(raise);
+	form.appendChild(br.cloneNode()); 
+	
+	//missing image field
+	
+	form.appendChild(br.cloneNode()); 
+	form.appendChild(button);
+	
+	formHtml.appendChild(form);
+	
+	document.getElementById("itemName").insertAdjacentText('beforebegin', "Item Name ");
+	document.getElementById("description").insertAdjacentText('beforebegin', "Description ");
+	document.getElementById("deadline").insertAdjacentText('beforebegin', "Deadline ");
+	document.getElementById("initialPrice").insertAdjacentText('beforebegin', "Initial Price ");
+	document.getElementById("raise").insertAdjacentText('beforebegin', "Raise ");
+
+	//missing action associated to button of the form
+
     }
 }
 
