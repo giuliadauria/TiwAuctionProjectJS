@@ -1,28 +1,19 @@
 package it.polimi.tiw.auction.controllers;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import it.polimi.tiw.auction.utils.ConnectionHandler;
 import it.polimi.tiw.auction.beans.User;
@@ -33,11 +24,10 @@ import it.polimi.tiw.auction.dao.BidDAO;
  * Servlet implementation class CreateBid
  */
 @WebServlet("/CreateBid")
+@MultipartConfig
 public class CreateBid extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Connection connection = null;
-	private TemplateEngine templateEngine;
-       
+	private Connection connection = null;       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -49,11 +39,6 @@ public class CreateBid extends HttpServlet {
     public void init() throws ServletException {
     	ServletContext servletContext = getServletContext();
 		connection = ConnectionHandler.getConnection(servletContext);
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
 	}
 
 
@@ -85,7 +70,7 @@ public class CreateBid extends HttpServlet {
 				initialPrice = auctionDAO.findAuctionDetailsById(auctionId).getInitialPrice();
 				raise = auctionDAO.findAuctionDetailsById(auctionId).getRaise();
 			}catch(Exception e) {
-				//e.printStackTrace();
+				e.printStackTrace();
 			}
 			isBadRequest = bid<=0 || bid<lastBid+raise || bid < initialPrice;
 		} catch (NumberFormatException | NullPointerException e) {
@@ -93,9 +78,12 @@ public class CreateBid extends HttpServlet {
 			e.printStackTrace();
 		}
 		if (isBadRequest) {
-			String ctxpath = getServletContext().getContextPath();
+			/*String ctxpath = getServletContext().getContextPath();
 			String path = ctxpath + "/GetAuctionDetails?auctionid=" + auctionId + "&biderror=true";
-			response.sendRedirect(path);
+			response.sendRedirect(path);*/
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("A bid can't be lower than the highest bid plus "
+					+ "the raise or lower than the initial price if you are first buyer");
 			return;
 		}
 
@@ -104,14 +92,19 @@ public class CreateBid extends HttpServlet {
 		try {
 			bidDAO.createBid(user.getUsername(), auctionId, Timestamp.from(Instant.now()), bid);
 		} catch (SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to add bid");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Not possible to add bid");
 			return;
 		}
 
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		return;
 		// return the user to the right view
-		String ctxpath = getServletContext().getContextPath();
+		/*String ctxpath = getServletContext().getContextPath();
 		String path = ctxpath + "/GetAuctionDetails?auctionid=" + auctionId;
-		response.sendRedirect(path);
+		response.sendRedirect(path);*/
 	}
 	
 	public void destroy() {
