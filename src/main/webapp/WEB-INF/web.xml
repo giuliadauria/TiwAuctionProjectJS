@@ -4,7 +4,7 @@
 		 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
 		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" 
 		 version="3.1">
-  <display-name>TIW-AuctionProject</display-name>
+  <display-name>TIW-AuctionProjectJS</display-name>
   <context-param>
     <param-name>dbUrl</param-name>
     <param-value>jdbc:mysql://localhost:3306/db_auction_project</param-value>
@@ -15,7 +15,7 @@
   </context-param>
   <context-param>
     <param-name>dbPassword</param-name>
-    <param-value>micio</param-value>
+    <param-value>091099</param-value>
   </context-param>
   <context-param>
     <param-name>dbDriver</param-name>

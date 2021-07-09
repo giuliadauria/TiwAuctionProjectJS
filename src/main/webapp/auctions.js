@@ -477,43 +477,33 @@ function logout() {
 }
 
 function pressedBuy() {
-	if(state === "sell") {
-		openAuctionsList.innerHTML = '';
-  		wonAuctionsList.innerHTML = '';
-  		mainTitle.innerHTML = '';
-  		secondaryTitle1.innerHTML = '';
-  		secondaryTitle2.innerHTML = '';
-  		formTitle.innerHTML = '';
-  		formHtml.innerHTML = '';
-  		researchForm.innerHTML = '';
-  		state = "buy";
-  		loadPage();
-	}
+	openAuctionsList.innerHTML = '';
+  	wonAuctionsList.innerHTML = '';
+  	mainTitle.innerHTML = '';
+  	secondaryTitle1.innerHTML = '';
+  	secondaryTitle2.innerHTML = '';
+  	formTitle.innerHTML = '';
+  	formHtml.innerHTML = '';
+  	researchForm.innerHTML = '';
+  	state = "buy";
+  	loadPage();
 }
 
 function pressedSell() {
-	if(state === "buy") {
-		openAuctionsList.innerHTML = '';
-  		wonAuctionsList.innerHTML = '';
-  		mainTitle.innerHTML = '';
-  		secondaryTitle1.innerHTML = '';
-  		secondaryTitle2.innerHTML = '';
-  		formTitle.innerHTML = '';
-  		formHtml.innerHTML = '';
-  		researchForm.innerHTML = '';
-  		state = "sell";
-  		loadPage();
-	}
+	openAuctionsList.innerHTML = '';
+  	wonAuctionsList.innerHTML = '';
+  	mainTitle.innerHTML = '';
+  	secondaryTitle1.innerHTML = '';
+  	secondaryTitle2.innerHTML = '';
+  	formTitle.innerHTML = '';
+  	formHtml.innerHTML = '';
+  	researchForm.innerHTML = '';
+  	state = "sell";
+  	loadPage();
 }
 
 buyButton.addEventListener("click", pressedBuy, false);
 sellButton.addEventListener("click", pressedSell, false);
-
-function empty(element) {
-	while (element.firstChild) {
-    	element.firstChild.remove();	
-	}
-}
 
 function makeCall(method, url, formElement, cback, reset = true) {
 	    var req = new XMLHttpRequest(); // visible by closure

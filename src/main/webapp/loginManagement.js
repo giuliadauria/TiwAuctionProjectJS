@@ -15,7 +15,7 @@
               case 200:
 				console.log(message);
 				//message = JSON.stringify(message);
-            	sessionStorage.setItem('username', message.substring(0, message.length - 1));
+            	sessionStorage.setItem('username', message.substring(0, message.length - 2));
                 window.location.href = "Home.html";
                 break;
               case 400: // bad request
