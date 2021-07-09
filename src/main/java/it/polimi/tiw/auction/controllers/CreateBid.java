@@ -78,9 +78,6 @@ public class CreateBid extends HttpServlet {
 			e.printStackTrace();
 		}
 		if (isBadRequest) {
-			/*String ctxpath = getServletContext().getContextPath();
-			String path = ctxpath + "/GetAuctionDetails?auctionid=" + auctionId + "&biderror=true";
-			response.sendRedirect(path);*/
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("A bid can't be lower than the highest bid plus "
 					+ "the raise or lower than the initial price if you are first buyer");
@@ -101,10 +98,6 @@ public class CreateBid extends HttpServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		return;
-		// return the user to the right view
-		/*String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GetAuctionDetails?auctionid=" + auctionId;
-		response.sendRedirect(path);*/
 	}
 	
 	public void destroy() {

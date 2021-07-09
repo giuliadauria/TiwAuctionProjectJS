@@ -147,11 +147,6 @@ public class CreateAuction extends HttpServlet {
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
-		
-		//updating the view of sell page
-		/*String ctxpath = getServletContext().getContextPath();
-		String path = ctxpath + "/GoToSell";
-		response.sendRedirect(path);*/	
 		return;
 	}
 	

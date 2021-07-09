@@ -15,7 +15,7 @@
   </context-param>
   <context-param>
     <param-name>dbPassword</param-name>
-    <param-value>091099</param-value>
+    <param-value>micio</param-value>
   </context-param>
   <context-param>
     <param-name>dbDriver</param-name>
@@ -23,7 +23,7 @@
   </context-param>
   <context-param>
     <param-name>outputpath</param-name>
-    <param-value>D:\TIW-Project\TIW-AuctionProject\src\main\webapp\images\</param-value>
+    <param-value>/home/giulia/Scrivania/TiwAuctionProjectJS/src/main/webapp/images/</param-value>
   </context-param>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

@@ -490,7 +490,6 @@ function updateAuctionDetails() {
 		auctionId.setAttribute("id", "auctionId");
 		auctionId.setAttribute("type", "hidden");
 		auctionId.setAttribute("name", "auctionId");
-		console.log(auctionDetails.auctionId);
 		var aId = auctionDetails.auctionId;
 		auctionId.setAttribute("value", aId);
 		
@@ -513,7 +512,7 @@ function updateAuctionDetails() {
 		formBidHtml.appendChild(form);
 
 		document.getElementById("bid").insertAdjacentText('beforebegin', "Offer ");
-	
+			
 		form.querySelector("input[type='button']").addEventListener("click", (event) => {
 			valid = true;
 			var varForm = event.target.closest("form");
@@ -532,7 +531,8 @@ function updateAuctionDetails() {
 	              		var message = req.responseText;
 	               		switch(req.status){
 							case 200: 
-							console.log("everything ok");
+								autoclick(aId);
+								autoclick(aId);
 								break;
 							default:
 					            document.getElementById("errorMessage").textContent = message;
@@ -543,7 +543,7 @@ function updateAuctionDetails() {
 			}
 	
 		});		
-
+		
 		bidTable = document.createElement("table");
 		bidThead = document.createElement("thead");
 		bidTable.appendChild(bidThead);
@@ -577,8 +577,15 @@ function updateAuctionDetails() {
 		td.appendChild(bidTable);
 		opened[id] = true;
     }
+		
 }
 
+function autoclick(auctionId){
+	  var e = new Event("click");
+	  var selector = "a[auctionid='" + auctionId + "']";
+	  var anchorToClick =  document.querySelector(selector);
+	  anchorToClick.dispatchEvent(e);
+}
 
 function closeAuctionDetails() {
 	var cell;
