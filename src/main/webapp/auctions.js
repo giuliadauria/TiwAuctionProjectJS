@@ -305,6 +305,11 @@ function updateSellPage() {
 	raise.setAttribute("min", "0");
 	raise.setAttribute("required", "");
 	
+	var image = document.createElement("input");
+	image.setAttribute("id", "image");
+	image.setAttribute("type", "file");
+	image.setAttribute("name", "file");
+	
 	var button = document.createElement("input");
 	button.setAttribute("id", "button");
     button.setAttribute("type", "button");
@@ -322,10 +327,8 @@ function updateSellPage() {
 	form.appendChild(initialPrice);
 	form.appendChild(br.cloneNode()); 
 	form.appendChild(raise);
-	form.appendChild(br.cloneNode()); 
-	
-	//missing image field
-	
+	form.appendChild(br.cloneNode());
+	form.appendChild(image); 
 	form.appendChild(br.cloneNode()); 
 	form.appendChild(button);
 	form.appendChild(br.cloneNode()); 
@@ -338,6 +341,7 @@ function updateSellPage() {
 	document.getElementById("deadline").insertAdjacentText('beforebegin', "Deadline ");
 	document.getElementById("initialPrice").insertAdjacentText('beforebegin', "Initial Price ");
 	document.getElementById("raise").insertAdjacentText('beforebegin', "Raise ");
+	document.getElementById("image").insertAdjacentText('beforebegin', "Choose an image ");
 	
 	form.querySelector("input[type='button']").addEventListener("click", (event) => {
 		valid = true;
@@ -357,7 +361,7 @@ function updateSellPage() {
 	              	var message = req.responseText;
 	               	switch(req.status){
 						case 200: 
-							loadSellPage();
+							pressedSell();
 							break;
 						default:
 				            document.getElementById("errorMessage").textContent = message;
