@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,22 +75,25 @@ public class CreateAuction extends HttpServlet {
 		String itemName = null;
 		String description = null;
 		Timestamp deadline = null;
+		LocalDateTime localDateTime = null;
 		Float initialPrice = null;
 		Float raise = null;
 		try {
 			itemName = StringEscapeUtils.escapeJava(request.getParameter("itemName"));
 			description = StringEscapeUtils.escapeJava(request.getParameter("description"));
-			deadline = Timestamp.valueOf(request.getParameter("deadline"));
+		    localDateTime = LocalDateTime.parse(request.getParameter("deadline"));
+			deadline = Timestamp.valueOf(localDateTime);
 			initialPrice = Float.valueOf(request.getParameter("initialPrice"));
 			raise = Float.valueOf(request.getParameter("raise"));
 			isBadRequest = (raise < 0) || (initialPrice < 0) || (description.isEmpty()) || (itemName.isEmpty())
 					|| (deadline.before(now));
 		}catch (NullPointerException | IllegalArgumentException e) {
 			isBadRequest = true;
-			//e.printStackTrace();
+			e.printStackTrace();
 		}
 		if(isBadRequest) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Incorrect or missing param values");
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Incorrect or missing param values");
 			return;
 		}
 		Part filePart = request.getPart("file");
@@ -99,7 +103,8 @@ public class CreateAuction extends HttpServlet {
 		    String contentType = filePart.getContentType();
 		    if(!contentType.equals("application/octet-stream")) {
 			    if (!contentType.startsWith("image")) {
-					response.sendError(HttpServletResponse.SC_BAD_REQUEST, "File format not permitted");
+			    	response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					response.getWriter().println("File format not permitted");
 					return;
 				}
 			    String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -115,7 +120,8 @@ public class CreateAuction extends HttpServlet {
 						Files.copy(fileContent, file.toPath());	
 					}catch (Exception e) {
 						e.printStackTrace();
-						response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error while saving file");
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						response.getWriter().println("Error while saving file");
 						return;
 					}
 				}catch(Exception e) {
@@ -133,13 +139,19 @@ public class CreateAuction extends HttpServlet {
 		try {
 			auctionDAO.createAuction(user.getUserId(), reverseEscape(itemName), reverseEscape(description), deadline, initialPrice, raise, imagesUrls);
 		}catch(SQLException e) {
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to create auction");
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Not possible to create auction");
 			return;
-		}	
+		}
+		
+		response.setStatus(HttpServletResponse.SC_OK);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		
 		//updating the view of sell page
-		String ctxpath = getServletContext().getContextPath();
+		/*String ctxpath = getServletContext().getContextPath();
 		String path = ctxpath + "/GoToSell";
-		response.sendRedirect(path);	
+		response.sendRedirect(path);*/	
 		return;
 	}
 	

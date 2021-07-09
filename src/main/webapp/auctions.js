@@ -1,4 +1,5 @@
-var state = localStorage.getItem('state'),
+//var state = localStorage.getItem('state'),
+var state = "sell",
 	x,
 	id,
 	opened = [],
@@ -16,8 +17,8 @@ var state = localStorage.getItem('state'),
 
 window.addEventListener("load", loadPage, false);
 logoutButton.addEventListener("click", logout, false);
-buyButton.addEventListener("click", pressedBuy, false);
-sellButton.addEventListener("click", pressedSell, false);
+//buyButton.addEventListener("click", pressedBuy, false);
+//sellButton.addEventListener("click", pressedSell, false);
 
 function loadPage() {
 	console.log(state);
@@ -269,8 +270,9 @@ function updateSellPage() {
 	var br = document.createElement("br"); 
 	
 	var form = document.createElement("form");
-    form.setAttribute("method", "post");
-    form.setAttribute("action", "#");
+    form.setAttribute("method", "POST");
+	form.setAttribute("id", "createForm");
+	form.setAttribute("enctype", "multipart/form-data");
 	
     var itemName = document.createElement("input");
 	itemName.setAttribute("id", "itemName");
@@ -304,8 +306,12 @@ function updateSellPage() {
 	raise.setAttribute("required", "");
 	
 	var button = document.createElement("input");
-    button.setAttribute("type", "submit");
+	button.setAttribute("id", "button");
+    button.setAttribute("type", "button");
     button.setAttribute("value", "Create Auction");
+
+	var errorMessage = document.createElement("p");
+	errorMessage.setAttribute("id", "errorMessage");
 	
 	form.appendChild(itemName);
 	form.appendChild(br.cloneNode()); 
@@ -322,6 +328,8 @@ function updateSellPage() {
 	
 	form.appendChild(br.cloneNode()); 
 	form.appendChild(button);
+	form.appendChild(br.cloneNode()); 
+	form.appendChild(errorMessage);
 	
 	formHtml.appendChild(form);
 	
@@ -330,10 +338,37 @@ function updateSellPage() {
 	document.getElementById("deadline").insertAdjacentText('beforebegin', "Deadline ");
 	document.getElementById("initialPrice").insertAdjacentText('beforebegin', "Initial Price ");
 	document.getElementById("raise").insertAdjacentText('beforebegin', "Raise ");
-
-	//missing action associated to button of the form
-
-    }
+	
+	form.querySelector("input[type='button']").addEventListener("click", (event) => {
+		valid = true;
+		var varForm = event.target.closest("form");
+	    for (i = 0; i < varForm.elements.length; i++) {
+			console.log(varForm.elements[i]);
+            if (!varForm.elements[i].checkValidity()) {
+	      	    varForm.elements[i].reportValidity();
+	            valid = false;
+	            break;
+	        }
+		}
+		if(valid){
+	        makeCall("POST", "CreateAuction", document.getElementById("createForm"),
+	        	function(req) {
+	            if (req.readyState == XMLHttpRequest.DONE) {
+	              	var message = req.responseText;
+	               	switch(req.status){
+						case 200: 
+							loadSellPage();
+							break;
+						default:
+				            document.getElementById("errorMessage").textContent = message;
+							break;
+					}
+	            }
+			});
+		}
+	
+	});
+	
 }
 
 function loadAuctionDetails(auctionId) {
@@ -470,8 +505,30 @@ function pressedSell() {
   		loadPage();
 	}
 }
+
+buyButton.addEventListener("click", pressedBuy, false);
+sellButton.addEventListener("click", pressedSell, false);
+
 function empty(element) {
 	while (element.firstChild) {
-    	element.firstChild.remove()
+    	element.firstChild.remove();	
 	}
+}
+
+function makeCall(method, url, formElement, cback, reset = true) {
+	    var req = new XMLHttpRequest(); // visible by closure
+	    req.onreadystatechange = function() {
+	      cback(req)
+	    }; // closure
+	    req.open(method, url);
+	    if (formElement == null) {
+	      req.send();
+	    } else {
+	      req.send(new FormData(formElement));
+	    }
+	    if (formElement !== null && reset === true) {
+	      formElement.reset();
+	    }
+	  }
+
 }
