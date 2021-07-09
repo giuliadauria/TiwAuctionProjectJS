@@ -62,3 +62,9 @@ img.fixed {
 	border-radius: 8px;
 	height: 192px;
 }
+button, #loginbutton {
+	border-radius: 8px;
+	padding: 10px;
+	background-color: #e7e7e7;
+	cursor: pointer;
+}
