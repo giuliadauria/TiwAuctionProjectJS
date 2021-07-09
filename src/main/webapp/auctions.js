@@ -1,5 +1,4 @@
-//var state = localStorage.getItem('state'),
-var state = "sell",
+var state = localStorage.getItem('state'),
 	x,
 	id,
 	opened = [],
@@ -17,8 +16,8 @@ var state = "sell",
 
 window.addEventListener("load", loadPage, false);
 logoutButton.addEventListener("click", logout, false);
-//buyButton.addEventListener("click", pressedBuy, false);
-//sellButton.addEventListener("click", pressedSell, false);
+buyButton.addEventListener("click", pressedBuy, false);
+sellButton.addEventListener("click", pressedSell, false);
 
 function loadPage() {
 	console.log(state);
@@ -108,8 +107,8 @@ function updateBuyPage() {
 				row.appendChild(cell);
 				tBody.appendChild(row);
 			}
-			openAuctionsList.appendChild(tBody);
 		}
+		openAuctionsList.appendChild(tBody);
 		
 		tHead = document.createElement("thead");
 		row = document.createElement("tr");
@@ -266,113 +265,114 @@ function updateSellPage() {
 		}
 		wonAuctionsList.appendChild(tBody);
 		
-	formTitle.textContent = "Create an Auction:";
-	var br = document.createElement("br"); 
+		formTitle.textContent = "Create an Auction:";
+		var br = document.createElement("br"); 
 	
-	var form = document.createElement("form");
-    form.setAttribute("method", "POST");
-	form.setAttribute("id", "createForm");
-	form.setAttribute("enctype", "multipart/form-data");
+		var form = document.createElement("form");
+    	form.setAttribute("method", "POST");
+		form.setAttribute("id", "createForm");
+		form.setAttribute("enctype", "multipart/form-data");
 	
-    var itemName = document.createElement("input");
-	itemName.setAttribute("id", "itemName");
-    itemName.setAttribute("type", "text");
-    itemName.setAttribute("name", "itemName");
-	itemName.setAttribute("required", "");
+    	var itemName = document.createElement("input");
+		itemName.setAttribute("id", "itemName");
+    	itemName.setAttribute("type", "text");
+    	itemName.setAttribute("name", "itemName");
+		itemName.setAttribute("required", "");
+		
+    	var description = document.createElement("input");
+		description.setAttribute("id", "description");
+    	description.setAttribute("type", "text");
+    	description.setAttribute("name", "description");
+		description.setAttribute("required", "");
 	
-    var description = document.createElement("input");
-	description.setAttribute("id", "description");
-    description.setAttribute("type", "text");
-    description.setAttribute("name", "description");
-	description.setAttribute("required", "");
+		var deadline = document.createElement("input");
+		deadline.setAttribute("id", "deadline");
+		deadline.setAttribute("type", "datetime-local");
+		deadline.setAttribute("name", "deadline");
+		deadline.setAttribute("required", "");
 	
-	var deadline = document.createElement("input");
-	deadline.setAttribute("id", "deadline");
-	deadline.setAttribute("type", "datetime-local");
-	deadline.setAttribute("name", "deadline");
-	deadline.setAttribute("required", "");
+		var initialPrice = document.createElement("input");
+		initialPrice.setAttribute("id", "initialPrice");
+		initialPrice.setAttribute("type", "text");
+		initialPrice.setAttribute("name", "initialPrice");
+		initialPrice.setAttribute("required", "");
 	
-	var initialPrice = document.createElement("input");
-	initialPrice.setAttribute("id", "initialPrice");
-	initialPrice.setAttribute("type", "text");
-	initialPrice.setAttribute("name", "initialPrice");
-	initialPrice.setAttribute("required", "");
+		var raise = document.createElement("input");
+		raise.setAttribute("id", "raise");
+		raise.setAttribute("type", "text");
+		raise.setAttribute("name", "raise");
+		raise.setAttribute("min", "0");
+		raise.setAttribute("required", "");
 	
-	var raise = document.createElement("input");
-	raise.setAttribute("id", "raise");
-	raise.setAttribute("type", "text");
-	raise.setAttribute("name", "raise");
-	raise.setAttribute("min", "0");
-	raise.setAttribute("required", "");
+		var image = document.createElement("input");
+		image.setAttribute("id", "image");
+		image.setAttribute("type", "file");
+		image.setAttribute("name", "file");
 	
-	var image = document.createElement("input");
-	image.setAttribute("id", "image");
-	image.setAttribute("type", "file");
-	image.setAttribute("name", "file");
-	
-	var button = document.createElement("input");
-	button.setAttribute("id", "button");
-    button.setAttribute("type", "button");
-    button.setAttribute("value", "Create Auction");
+		var button = document.createElement("input");
+		button.setAttribute("id", "button");
+    	button.setAttribute("type", "button");
+    	button.setAttribute("value", "Create Auction");
 
-	var errorMessage = document.createElement("p");
-	errorMessage.setAttribute("id", "errorMessage");
+		var errorMessage = document.createElement("p");
+		errorMessage.setAttribute("id", "errorMessage");
 	
-	form.appendChild(itemName);
-	form.appendChild(br.cloneNode()); 
-	form.appendChild(description);
-	form.appendChild(br.cloneNode()); 
-	form.appendChild(deadline);
-	form.appendChild(br.cloneNode()); 
-	form.appendChild(initialPrice);
-	form.appendChild(br.cloneNode()); 
-	form.appendChild(raise);
-	form.appendChild(br.cloneNode());
-	form.appendChild(image); 
-	form.appendChild(br.cloneNode()); 
-	form.appendChild(button);
-	form.appendChild(br.cloneNode()); 
-	form.appendChild(errorMessage);
+		form.appendChild(itemName);
+		form.appendChild(br.cloneNode()); 
+		form.appendChild(description);
+		form.appendChild(br.cloneNode()); 
+		form.appendChild(deadline);
+		form.appendChild(br.cloneNode()); 
+		form.appendChild(initialPrice);
+		form.appendChild(br.cloneNode()); 
+		form.appendChild(raise);
+		form.appendChild(br.cloneNode());
+		form.appendChild(image); 
+		form.appendChild(br.cloneNode()); 
+		form.appendChild(button);
+		form.appendChild(br.cloneNode()); 
+		form.appendChild(errorMessage);
 	
-	formHtml.appendChild(form);
+		formHtml.appendChild(form);
+		
+		document.getElementById("itemName").insertAdjacentText('beforebegin', "Item Name ");
+		document.getElementById("description").insertAdjacentText('beforebegin', "Description ");
+		document.getElementById("deadline").insertAdjacentText('beforebegin', "Deadline ");
+		document.getElementById("initialPrice").insertAdjacentText('beforebegin', "Initial Price ");
+		document.getElementById("raise").insertAdjacentText('beforebegin', "Raise ");
+		document.getElementById("image").insertAdjacentText('beforebegin', "Choose an image ");
 	
-	document.getElementById("itemName").insertAdjacentText('beforebegin', "Item Name ");
-	document.getElementById("description").insertAdjacentText('beforebegin', "Description ");
-	document.getElementById("deadline").insertAdjacentText('beforebegin', "Deadline ");
-	document.getElementById("initialPrice").insertAdjacentText('beforebegin', "Initial Price ");
-	document.getElementById("raise").insertAdjacentText('beforebegin', "Raise ");
-	document.getElementById("image").insertAdjacentText('beforebegin', "Choose an image ");
+		form.querySelector("input[type='button']").addEventListener("click", (event) => {
+			valid = true;
+			var varForm = event.target.closest("form");
+	    	for (i = 0; i < varForm.elements.length; i++) {
+				console.log(varForm.elements[i]);
+            	if (!varForm.elements[i].checkValidity()) {
+	      	    	varForm.elements[i].reportValidity();
+	            	valid = false;
+	            	break;
+	        	}
+			}
+			if(valid){
+				
+	        	makeCall("POST", "CreateAuction", document.getElementById("createForm"),
+	        		function(req) {
+	            	if (req.readyState == XMLHttpRequest.DONE) {
+	              		var message = req.responseText;
+	               		switch(req.status){
+							case 200: 
+								pressedSell();
+								break;
+							default:
+				            	document.getElementById("errorMessage").textContent = message;
+								break;
+						}
+	            	}
+				});
+			}
 	
-	form.querySelector("input[type='button']").addEventListener("click", (event) => {
-		valid = true;
-		var varForm = event.target.closest("form");
-	    for (i = 0; i < varForm.elements.length; i++) {
-			console.log(varForm.elements[i]);
-            if (!varForm.elements[i].checkValidity()) {
-	      	    varForm.elements[i].reportValidity();
-	            valid = false;
-	            break;
-	        }
-		}
-		if(valid){
-	        makeCall("POST", "CreateAuction", document.getElementById("createForm"),
-	        	function(req) {
-	            if (req.readyState == XMLHttpRequest.DONE) {
-	              	var message = req.responseText;
-	               	switch(req.status){
-						case 200: 
-							pressedSell();
-							break;
-						default:
-				            document.getElementById("errorMessage").textContent = message;
-							break;
-					}
-	            }
-			});
-		}
-	
-	});
-	
+		});
+	}
 }
 
 function loadAuctionDetails(auctionId) {
@@ -506,23 +506,18 @@ function pressedSell() {
   	loadPage();
 }
 
-buyButton.addEventListener("click", pressedBuy, false);
-sellButton.addEventListener("click", pressedSell, false);
-
 function makeCall(method, url, formElement, cback, reset = true) {
-	    var req = new XMLHttpRequest(); // visible by closure
-	    req.onreadystatechange = function() {
-	      cback(req)
-	    }; // closure
-	    req.open(method, url);
-	    if (formElement == null) {
-	      req.send();
-	    } else {
-	      req.send(new FormData(formElement));
-	    }
-	    if (formElement !== null && reset === true) {
-	      formElement.reset();
-	    }
-	  }
-
+	var req = new XMLHttpRequest(); // visible by closure
+	req.onreadystatechange = function() {
+		cback(req)
+	}; // closure
+	req.open(method, url);
+	if (formElement == null) {
+	    req.send();
+	} else {
+	    req.send(new FormData(formElement));
+	}
+	if (formElement !== null && reset === true) {
+	    formElement.reset();
+	}
 }
