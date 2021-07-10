@@ -1,4 +1,5 @@
 var state = localStorage.getItem('state'),
+	chronology,
 	x,
 	id,
 	opened = [],
@@ -12,7 +13,9 @@ var state = localStorage.getItem('state'),
   	openAuctionsList = document.getElementById("open"),
   	wonAuctionsList = document.getElementById("won"),
   	formHtml = document.getElementById("id_form"),
-  	researchForm = document.getElementById("id_form");
+  	researchForm = document.getElementById("id_form")
+  	chronologyTitle = document.getElementById("chronologyTitle"),
+  	chronologyList = document.getElementById("chronology");
 
 window.addEventListener("load", loadPage, false);
 logoutButton.addEventListener("click", logout, false);
@@ -20,7 +23,11 @@ buyButton.addEventListener("click", pressedBuy, false);
 sellButton.addEventListener("click", pressedSell, false);
 
 function loadPage() {
-	console.log(state);
+	if(localStorage.getItem("chronology") === undefined || localStorage.getItem("chronology") === null)
+		chronology = [];
+	else
+		 chronology = JSON.parse(localStorage["chronology"]);
+		//chronology = localStorage.getItem("chronology");
 	if(state === "sell")
 		loadSellPage();
 	else if (state === undefined || state === null || state === "buy")
@@ -30,6 +37,7 @@ function loadPage() {
 function loadBuyPage() {
 	state = "buy";
 	mainTitle.textContent = "Buy auction page";
+	chronologyTitle.textContent = "Chronology";
 	secondaryTitle1.textContent = "Open auctions";
 	secondaryTitle2.textContent = "Won auctions";
   	x = new XMLHttpRequest();
@@ -40,6 +48,12 @@ function loadBuyPage() {
 
 function updateBuyPage() {
     if(x.readyState == 4 && x.status == 200) {
+    	if(localStorage.getItem("chronology") === undefined || localStorage.getItem("chronology") === null)
+			chronology = [];
+		else {
+			chronology = localStorage.getItem("chronology");
+			chronology = JSON.parse(chronology);
+		}
 		var list = JSON.parse(x.response),
 			openAuctions = list[0],
 			wonAuctions = list[1],
@@ -48,6 +62,53 @@ function updateBuyPage() {
 			row,
 			cell,
 			anchor;
+		
+		tHead = document.createElement("thead");
+		row = document.createElement("tr");
+		cell = document.createElement("th");
+		cell.textContent = "Auction ID";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Seller";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Item Name";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Best Offer";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Remaining Time";
+		row.appendChild(cell);
+		tHead.appendChild(row);
+		chronologyList.appendChild(tHead);
+			
+		tBody = document.createElement("tbody");	
+		for(var i=0; i<chronology.length; i++) {
+			for(var j=0; j<openAuctions.length; j++) {
+				if(chronology[i] == openAuctions[j].auctionId) {
+					row = document.createElement("tr");
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].auctionId;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].seller;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].itemName;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].bestOffer;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].remainingTime;
+					row.appendChild(cell);
+					tBody.appendChild(row);
+				}
+			}
+		}
+		chronologyList.appendChild(tBody);
+		chronologyList.setAttribute("class", "list");
 		
 		tHead = document.createElement("thead");
 		row = document.createElement("tr");
@@ -362,7 +423,8 @@ function updateSellPage() {
 	            	if (req.readyState == XMLHttpRequest.DONE) {
 	              		var message = req.responseText;
 	               		switch(req.status){
-							case 200: 
+							case 200:
+								localStorage.setItem("state", "sell"); 
 								pressedSell();
 								break;
 							default:
@@ -420,6 +482,18 @@ function loadAuctionDetails(auctionId) {
 
 function updateAuctionDetails() {
 	if(x.readyState == 4 && x.status == 200) {
+		localStorage.setItem("state", "buy");
+		var pre = [id];
+		for(var i=0; i<chronology.length; i++) {
+			if(chronology[i] === id) {
+				chronology.splice(i, 1);
+			}
+		}
+		for(var i=0; i<chronology.length; i++) {
+			pre.push(chronology[i]);
+		}
+		chronology = pre;
+		localStorage.setItem("chronology", JSON.stringify(chronology));
 		var auctionDetails = JSON.parse(x.response),
 			td,
 			h1,
@@ -531,11 +605,9 @@ function updateAuctionDetails() {
 		    	        if (req.readyState == XMLHttpRequest.DONE) {
 		              		var message = req.responseText;
 		               		switch(req.status){
-								case 200: 
+								case 200:
 									autoclick(aId);
 									autoclick(aId);
-									var offer = document.getElementById("open" + aId).parentElement.previousSibling.childNodes[3];
-									offer.textContent = varForm.elements["bid"].value;
 									break;
 								default:
 						            document.getElementById("errorMessage").textContent = message;
@@ -619,9 +691,12 @@ function logout() {
 }
 
 function pressedBuy() {
+	chronologyList.innerHTML = '';
+	chronologyList.classList.remove("list");
 	openAuctionsList.innerHTML = '';
   	wonAuctionsList.innerHTML = '';
   	mainTitle.innerHTML = '';
+  	chronologyTitle.innerHTML = '';
   	secondaryTitle1.innerHTML = '';
   	secondaryTitle2.innerHTML = '';
   	formTitle.innerHTML = '';
@@ -632,9 +707,12 @@ function pressedBuy() {
 }
 
 function pressedSell() {
+	chronologyList.innerHTML = '';
+	chronologyList.classList.remove("list");
 	openAuctionsList.innerHTML = '';
   	wonAuctionsList.innerHTML = '';
   	mainTitle.innerHTML = '';
+  	chronologyTitle.innerHTML = '';
   	secondaryTitle1.innerHTML = '';
   	secondaryTitle2.innerHTML = '';
   	formTitle.innerHTML = '';
@@ -658,4 +736,4 @@ function makeCall(method, url, formElement, cback, reset = true) {
 	    if (formElement !== null && reset === true) {
 	      formElement.reset();
 	    }
-	  }
+}
