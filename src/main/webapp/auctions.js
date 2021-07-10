@@ -728,29 +728,28 @@ function updateAuctionDetails() {
 			form.querySelector("input[type='submit']").addEventListener("click", () =>{
 				console.log(aId);
 				
-				var request = new XMLHttpRequest();
-				request.open("POST", serverPath + "/CloseAuction?auctionId=" + aId);
-			  	request.send();
-				request.onreadystatechange = handleClosing(request);
+				x = new XMLHttpRequest();
+				x.open("POST", serverPath + "/CloseAuction?auctionId=" + aId);
+				x.onreadystatechange = handleClosing;
+			  	x.send();
 			});
 		}	
     }
 }
 		
-function handleClosing(request){
-	console.log(request.readyState);
-	if(request.readyState == 4 && request.status == 200) {
-		console.log("tutto ok");
-		pressedSell();
-	}
-	else{
-		document.getElementById("errorMessageClose").textContent = message;
+function handleClosing() {
+	if(x.readyState == 4) {
+		if(x.status == 200) {
+			pressedSell();
+		} else {
+			document.getElementById("errorMessageClose").textContent = JSON.parse(x.response);
+		}
 	}
 }
 
 
 
-function autoclick(auctionId){
+function autoclick(auctionId) {
 	  var e = new Event("click");
 	  var selector = "a[auctionid='" + auctionId + "']";
 	  var anchorToClick =  document.querySelector(selector);

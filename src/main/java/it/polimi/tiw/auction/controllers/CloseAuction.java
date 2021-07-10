@@ -16,6 +16,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import it.polimi.tiw.auction.dao.AuctionDAO;
 import it.polimi.tiw.auction.utils.ConnectionHandler;
 
@@ -67,17 +70,22 @@ public class CloseAuction extends HttpServlet {
 			//if you cannot close an auction, a message appears
 			cantClose = true;
 		}
-		if(cantClose) {			
+		Gson gson = new GsonBuilder().create();
+		if(cantClose) {
+			String json = gson.toJson("This auction cannot be closed yet, wait for its deadline!");
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println("This auction cannot be closed yet, wait for its deadline!");
-			return;
+			//response.getWriter().println("This auction cannot be closed yet, wait for its deadline!");
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(json);
 		}
 		//Redirect to the Sell page and add the closed action to the closed auction list
 		else {
+			String json = gson.toJson("Ok");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			return;
+			response.getWriter().write(json);
 		}	
 	}
 	
