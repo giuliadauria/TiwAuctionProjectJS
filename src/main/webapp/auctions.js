@@ -145,6 +145,8 @@ function updateBuyPage() {
 			tBody.appendChild(row);
 		}
 		wonAuctionsList.appendChild(tBody);
+		
+		//form search auction by keyword
     }
 }
 
@@ -457,12 +459,11 @@ function updateAuctionDetails() {
 		p = document.createElement("p");
 		p.textContent = "Initial price: " + auctionDetails.initialPrice + " raise: " + auctionDetails.raise;
 		td.appendChild(p);
-				
-		if(sthStillOpen() === 0){
-					
+									
 			var title = document.createElement("h3");
 			title.setAttribute("id", "title");
 			title.textContent = "Send a bid for this auction:";
+			var aId = auctionDetails.auctionId;
 			
 			td.appendChild(title);
 			
@@ -476,7 +477,7 @@ function updateAuctionDetails() {
 		
 			var form = document.createElement("form");
 	    	form.setAttribute("method", "POST");
-			form.setAttribute("id", "createForm");
+			form.setAttribute("id", "createForm" + aId);
 			form.setAttribute("enctype", "multipart/form-data");
 			
 			var bid = document.createElement("input");
@@ -490,7 +491,6 @@ function updateAuctionDetails() {
 			auctionId.setAttribute("id", "auctionId");
 			auctionId.setAttribute("type", "hidden");
 			auctionId.setAttribute("name", "auctionId");
-			var aId = auctionDetails.auctionId;
 			auctionId.setAttribute("value", aId);
 			
 			var button = document.createElement("input");
@@ -525,7 +525,7 @@ function updateAuctionDetails() {
 		        	}
 				}
 				if(valid){
-			        makeCall("POST", "CreateBid", document.getElementById("createForm"),
+			        makeCall("POST", "CreateBid", document.getElementById("createForm" + aId),
 			        	function(req) {
 		    	        if (req.readyState == XMLHttpRequest.DONE) {
 		              		var message = req.responseText;
@@ -543,7 +543,6 @@ function updateAuctionDetails() {
 				}
 		
 			});
-		}	
 		
 		bidTable = document.createElement("table");
 		bidThead = document.createElement("thead");
