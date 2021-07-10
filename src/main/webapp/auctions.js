@@ -3,6 +3,7 @@ var state = localStorage.getItem('state'),
 	fakeClick = window.sessionStorage.getItem('fakeClick'),
 	chronology,
 	x,
+	y,
 	id,
 	opened = [],
 	serverPath = "http://localhost:8080/TIW-AuctionProjectJS",
@@ -53,23 +54,15 @@ function loadBuyPage() {
   	x.send();
 }
 
-function updateBuyPage() {
-    if(x.readyState == 4 && x.status == 200) {
-    	if(localStorage.getItem("chronology") === undefined || localStorage.getItem("chronology") === null)
-			chronology = [];
-		else {
-			chronology = localStorage.getItem("chronology");
-			chronology = JSON.parse(chronology);
-		}
-		var list = JSON.parse(x.response),
-			openAuctions = list[0],
-			wonAuctions = list[1],
+function chrono() {
+	if(y.readyState == 4 && y.status == 200) {
+		var fullList = JSON.parse(y.response),
+			auctions = fullList[0],
 			tHead,
-			tBody,
 			row,
 			cell,
-			anchor;
-			
+			tBody;
+		
 		tHead = document.createElement("thead");
 		row = document.createElement("tr");
 		cell = document.createElement("th");
@@ -92,23 +85,23 @@ function updateBuyPage() {
 
 		tBody = document.createElement("tbody");	
 		for(var i=0; i<chronology.length; i++) {
-			for(var j=0; j<openAuctions.length; j++) {
-				if(chronology[i] == openAuctions[j].auctionId) {
+			for(var j=0; j<auctions.length; j++) {
+				if(chronology[i] == auctions[j].auctionId) {
 					row = document.createElement("tr");
 					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].auctionId;
+					cell.textContent = auctions[j].auctionId;
 					row.appendChild(cell);
 					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].seller;
+					cell.textContent = auctions[j].seller;
 					row.appendChild(cell);
 					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].itemName;
+					cell.textContent = auctions[j].itemName;
 					row.appendChild(cell);
 					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].bestOffer;
+					cell.textContent = auctions[j].bestOffer;
 					row.appendChild(cell);
 					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].remainingTime;
+					cell.textContent = auctions[j].remainingTime;
 					row.appendChild(cell);
 					tBody.appendChild(row);
 				}
@@ -116,7 +109,26 @@ function updateBuyPage() {
 		}
 		chronologyList.appendChild(tBody);
 		chronologyList.setAttribute("class", "list");
-		
+	}
+}
+
+function updateBuyPage() {
+    if(x.readyState == 4 && x.status == 200) {
+    	if(localStorage.getItem("chronology") === undefined || localStorage.getItem("chronology") === null)
+			chronology = [];
+		else {
+			chronology = localStorage.getItem("chronology");
+			chronology = JSON.parse(chronology);
+		}
+		var list = JSON.parse(x.response),
+			openAuctions = list[0],
+			wonAuctions = list[1],
+			tHead,
+			tBody,
+			row,
+			cell,
+			anchor;
+  		
 		tHead = document.createElement("thead");
 		row = document.createElement("tr");
 		cell = document.createElement("th");
@@ -266,6 +278,10 @@ function updateBuyPage() {
 			});
 			window.sessionStorage.setItem('keyword', "");
 	    }
+	    y = new XMLHttpRequest();
+ 		y.onreadystatechange = chrono;
+		y.open("GET", serverPath + "/GoToBuy");
+  		y.send();
 	}
 }
 
@@ -510,18 +526,21 @@ function loadAuctionDetails(auctionId) {
 
 function updateAuctionDetails() {
 	if(x.readyState == 4 && x.status == 200) {
-		localStorage.setItem("state", "buy");
-		var pre = [id];
-		for(var i=0; i<chronology.length; i++) {
-			if(chronology[i] === id) {
-				chronology.splice(i, 1);
+		if(state === "buy") {
+			localStorage.setItem("state", "buy");
+			var pre = [id];
+			for(var i=0; i<chronology.length; i++) {
+				if(chronology[i] === id) {
+					chronology.splice(i, 1);
+				}
 			}
+			for(var i=0; i<chronology.length; i++) {
+				pre.push(chronology[i]);
+			}
+			chronology = pre;
+			localStorage.setItem("chronology", JSON.stringify(chronology));
 		}
-		for(var i=0; i<chronology.length; i++) {
-			pre.push(chronology[i]);
-		}
-		chronology = pre;
-		localStorage.setItem("chronology", JSON.stringify(chronology));
+		
 		var auctionDetails = JSON.parse(x.response),
 			td,
 			h1,
