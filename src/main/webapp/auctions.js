@@ -604,6 +604,7 @@ function updateAuctionDetails() {
 		var errorMessage = document.createElement("p");
 		errorMessage.setAttribute("id", "errorMessage");
 	
+		form.appendChild(document.createTextNode("Offer: "));
 		form.appendChild(bid);
 		form.appendChild(br.cloneNode());
 		form.appendChild(auctionId);
@@ -614,7 +615,7 @@ function updateAuctionDetails() {
 	 
 		formBidHtml.appendChild(form);
 	
-		document.getElementById("bid").insertAdjacentText('beforebegin', "Offer ");
+		//document.getElementById("bid").insertAdjacentText('beforebegin', "Offer ");
 				
 		form.querySelector("input[type='submit']").addEventListener("click", (event) => {
 			valid = true;
@@ -651,6 +652,7 @@ function updateAuctionDetails() {
 		bidThead = document.createElement("thead");
 		bidTable.appendChild(bidThead);
 		bidTbody = document.createElement("tbody");
+		var maxOffer = 0;
 		for(var i=0; i<auctionDetails.bidList.length; i++) {
 			if(i === 0) {
 				bidTable.setAttribute('class', "sublist");
@@ -663,6 +665,7 @@ function updateAuctionDetails() {
 				bidTh = document.createElement("th");
 				bidTh.textContent = "Date";
 				bidThead.appendChild(bidTh);
+				maxOffer = auctionDetails.bidList[0].offer;
 			}
 			bidTr = document.createElement("tr");
 			bidTd = document.createElement("td");
