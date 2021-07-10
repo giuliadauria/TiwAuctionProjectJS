@@ -116,7 +116,7 @@ function updateBuyPage() {
 		chronologyList.appendChild(tBody);
 		chronologyList.setAttribute("class", "list");
 		
-		tHead = document.createElement("thead");
+		/*tHead = document.createElement("thead");
 		row = document.createElement("tr");
 		cell = document.createElement("th");
 		cell.textContent = "Auction ID";
@@ -161,7 +161,7 @@ function updateBuyPage() {
 			}
 		}
 		chronologyList.appendChild(tBody);
-		chronologyList.setAttribute("class", "list");
+		chronologyList.setAttribute("class", "list");*/
 		
 		tHead = document.createElement("thead");
 		row = document.createElement("tr");
@@ -262,7 +262,7 @@ function updateBuyPage() {
 		
 		formTitle.textContent = "Search an auction by keyword in name or description:";
 		var br = document.createElement("br"); 
-				
+			
 		if(!document.forms[0]){
 	
 			var form = document.createElement("form");
@@ -286,9 +286,7 @@ function updateBuyPage() {
 			form.appendChild(button);
 			
 			formHtml.appendChild(form);
-			
-			document.body.appendChild(form);
-	
+				
 			document.getElementById("keyword").insertAdjacentText('beforebegin', "Keyword ");
 			
 			form.querySelector("input[type='submit']").addEventListener("click", (event) => {
