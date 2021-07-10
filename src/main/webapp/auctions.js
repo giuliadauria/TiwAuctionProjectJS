@@ -596,7 +596,7 @@ function updateAuctionDetails() {
 			formBidHtml.setAttribute("class", "center");
 			formBidHtml.setAttribute("id", "formBidHtml");
 				
-			td.appendChild(br);
+			//td.appendChild(br);
 			td.appendChild(formBidHtml);
 			
 			var form = document.createElement("form");
@@ -623,7 +623,7 @@ function updateAuctionDetails() {
 			button.setAttribute("value", "Add bid");
 		
 			var errorMessage = document.createElement("p");
-			errorMessage.setAttribute("id", "errorMessage");
+			errorMessage.setAttribute("id", "errorMessage" + aId);
 		
 			form.appendChild(document.createTextNode("Offer: "));
 			form.appendChild(bid);
@@ -660,7 +660,7 @@ function updateAuctionDetails() {
 									autoclick(aId);
 									break;
 								default:
-						            document.getElementById("errorMessage").textContent = message;
+						            document.getElementById("errorMessage" + aId).textContent = message;
 									break;
 							}
 		            	}	
