@@ -29,6 +29,7 @@ function loadPage() {
 		chronology = [];
 	else
 		 chronology = JSON.parse(localStorage["chronology"]);
+		//chronology = localStorage.getItem("chronology");
 	if(state === "sell")
 		loadSellPage();
 	else if (state === undefined || state === null || state === "buy")
@@ -53,7 +54,7 @@ function loadBuyPage() {
 
 function updateBuyPage() {
     if(x.readyState == 4 && x.status == 200) {
-    	 if(localStorage.getItem("chronology") === undefined || localStorage.getItem("chronology") === null)
+    	if(localStorage.getItem("chronology") === undefined || localStorage.getItem("chronology") === null)
 			chronology = [];
 		else {
 			chronology = localStorage.getItem("chronology");
@@ -88,6 +89,53 @@ function updateBuyPage() {
 		tHead.appendChild(row);
 		chronologyList.appendChild(tHead);
 
+		tBody = document.createElement("tbody");	
+		for(var i=0; i<chronology.length; i++) {
+			for(var j=0; j<openAuctions.length; j++) {
+				if(chronology[i] == openAuctions[j].auctionId) {
+					row = document.createElement("tr");
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].auctionId;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].seller;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].itemName;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].bestOffer;
+					row.appendChild(cell);
+					cell = document.createElement("td");
+					cell.textContent = openAuctions[j].remainingTime;
+					row.appendChild(cell);
+					tBody.appendChild(row);
+				}
+			}
+		}
+		chronologyList.appendChild(tBody);
+		chronologyList.setAttribute("class", "list");
+		
+		tHead = document.createElement("thead");
+		row = document.createElement("tr");
+		cell = document.createElement("th");
+		cell.textContent = "Auction ID";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Seller";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Item Name";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Best Offer";
+		row.appendChild(cell);
+		cell = document.createElement("th");
+		cell.textContent = "Remaining Time";
+		row.appendChild(cell);
+		tHead.appendChild(row);
+		chronologyList.appendChild(tHead);
+			
 		tBody = document.createElement("tbody");	
 		for(var i=0; i<chronology.length; i++) {
 			for(var j=0; j<openAuctions.length; j++) {
@@ -616,7 +664,7 @@ function updateAuctionDetails() {
 		formBidHtml.appendChild(form);
 	
 		//document.getElementById("bid").insertAdjacentText('beforebegin', "Offer ");
-				
+
 		form.querySelector("input[type='submit']").addEventListener("click", (event) => {
 			valid = true;
 			var varForm = event.target.closest("form");
@@ -759,4 +807,4 @@ function makeCall(method, url, formElement, cback, reset = true) {
 	    if (formElement !== null && reset === true) {
 	      formElement.reset();
 	    }
-	  }
+}
