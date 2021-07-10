@@ -760,6 +760,7 @@ function handleClosing() {
 	if(x.readyState == 4) {
 		if(x.status == 200) {
 			pressedSell();
+			//loadPage();
 		} else {
 			document.getElementById("errorMessageClose").textContent = JSON.parse(x.response);
 		}
