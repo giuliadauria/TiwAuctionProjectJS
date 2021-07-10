@@ -15,7 +15,8 @@ var state = localStorage.getItem('state'),
   	openAuctionsList = document.getElementById("open"),
   	wonAuctionsList = document.getElementById("won"),
   	formHtml = document.getElementById("id_form"),
-  	researchForm = document.getElementById("id_form"),
+  	researchTitle = document.getElementById("researchTitle"),
+  	researchForm = document.getElementById("researchForm"),
   	chronologyTitle = document.getElementById("chronologyTitle"),
   	chronologyList = document.getElementById("chronology");
 
@@ -215,7 +216,7 @@ function updateBuyPage() {
 		}
 		wonAuctionsList.appendChild(tBody);
 		
-		formTitle.textContent = "Search an auction by keyword in name or description:";
+		researchTitle.textContent = "Search an auction by keyword in name or description:";
 		var br = document.createElement("br"); 
 			
 		if(!document.forms[0]){
@@ -240,7 +241,7 @@ function updateBuyPage() {
 			form.appendChild(br.cloneNode());
 			form.appendChild(button);
 			
-			formHtml.appendChild(form);
+			researchForm.appendChild(form);
 				
 			document.getElementById("keyword").insertAdjacentText('beforebegin', "Keyword ");
 			
@@ -566,7 +567,7 @@ function updateAuctionDetails() {
 		
 		var aId = auctionDetails.auctionId;
 							
-		if(localStorage.getItem('state' === "buy")){					
+		if(state === "buy"){					
 									
 			var title = document.createElement("h3");
 			title.setAttribute("id", "title");
@@ -685,8 +686,10 @@ function updateAuctionDetails() {
 			bidTr.appendChild(bidTd);
 			bidTbody.appendChild(bidTr);
 		}
-		var offer = document.getElementById("open" + aId).parentElement.previousSibling.childNodes[3];
-		offer.textContent = maxOffer;
+		if(state === "buy") {
+			var offer = document.getElementById("open" + aId).parentElement.previousSibling.childNodes[3];
+			offer.textContent = maxOffer;
+			}
 		bidTable.appendChild(bidTbody);
 		td.appendChild(bidTable);
 		opened[id] = true;
@@ -727,6 +730,7 @@ function pressedBuy() {
   	formTitle.innerHTML = '';
   	formHtml.innerHTML = '';
   	researchForm.innerHTML = '';
+  	researchTitle.innerHTML = '';
   	state = "buy";
 	if(window.sessionStorage.getItem('fakeClick') === 'false'){
 		window.sessionStorage.setItem('keyword', "");
@@ -747,6 +751,7 @@ function pressedSell() {
   	formTitle.innerHTML = '';
   	formHtml.innerHTML = '';
   	researchForm.innerHTML = '';
+  	researchTitle.innerHTML = '';
   	state = "sell";
   	loadPage();
 }
