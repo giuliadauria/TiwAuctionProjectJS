@@ -34,7 +34,6 @@ import it.polimi.tiw.auction.dao.AuctionDAO;
 @WebServlet("/GoToBuy")
 public class GoToBuy extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
 	private Connection connection = null;
 	
 	 /**
@@ -45,12 +44,6 @@ public class GoToBuy extends HttpServlet {
     }
 	
 	public void init() throws ServletException {
-		ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
 		connection = ConnectionHandler.getConnection(getServletContext());
 	}
 
@@ -75,7 +68,8 @@ public class GoToBuy extends HttpServlet {
 				try {
 					openAuctions = auctionDAO.findAuctionByKeyword(keyword);
 				} catch (SQLException e) {
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to find open auctions");
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					response.getWriter().println("Not possible to find open auctions");
 					return;
 				}
 				
@@ -85,7 +79,8 @@ public class GoToBuy extends HttpServlet {
 					User user = (User) session.getAttribute("user");
 					wonAuctions = auctionDAO.findWonAuctionByContractor(user.getUserId());
 				} catch (SQLException e) {
-					response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Not possible to find won auctions");
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					response.getWriter().println("Not possible to find won auctions");
 					return;
 				}
 
