@@ -69,7 +69,7 @@ function updateBuyPage() {
 			cell,
 			anchor;
 			
-			tHead = document.createElement("thead");
+		tHead = document.createElement("thead");
 		row = document.createElement("tr");
 		cell = document.createElement("th");
 		cell.textContent = "Auction ID";
@@ -116,53 +116,6 @@ function updateBuyPage() {
 		chronologyList.appendChild(tBody);
 		chronologyList.setAttribute("class", "list");
 		
-		/*tHead = document.createElement("thead");
-		row = document.createElement("tr");
-		cell = document.createElement("th");
-		cell.textContent = "Auction ID";
-		row.appendChild(cell);
-		cell = document.createElement("th");
-		cell.textContent = "Seller";
-		row.appendChild(cell);
-		cell = document.createElement("th");
-		cell.textContent = "Item Name";
-		row.appendChild(cell);
-		cell = document.createElement("th");
-		cell.textContent = "Best Offer";
-		row.appendChild(cell);
-		cell = document.createElement("th");
-		cell.textContent = "Remaining Time";
-		row.appendChild(cell);
-		tHead.appendChild(row);
-		chronologyList.appendChild(tHead);
-			
-		tBody = document.createElement("tbody");	
-		for(var i=0; i<chronology.length; i++) {
-			for(var j=0; j<openAuctions.length; j++) {
-				if(chronology[i] == openAuctions[j].auctionId) {
-					row = document.createElement("tr");
-					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].auctionId;
-					row.appendChild(cell);
-					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].seller;
-					row.appendChild(cell);
-					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].itemName;
-					row.appendChild(cell);
-					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].bestOffer;
-					row.appendChild(cell);
-					cell = document.createElement("td");
-					cell.textContent = openAuctions[j].remainingTime;
-					row.appendChild(cell);
-					tBody.appendChild(row);
-				}
-			}
-		}
-		chronologyList.appendChild(tBody);
-		chronologyList.setAttribute("class", "list");*/
-		
 		tHead = document.createElement("thead");
 		row = document.createElement("tr");
 		cell = document.createElement("th");
@@ -182,10 +135,12 @@ function updateBuyPage() {
 		row.appendChild(cell);
 		tHead.appendChild(row);
 		openAuctionsList.appendChild(tHead);
-		
+				
 		tBody = document.createElement("tbody");	
 		for(var i=0; i<openAuctions.length; i++) {
 			if(openAuctions[i].seller !== sessionStorage.getItem('username')) {
+						console.log(openAuctions[i].seller);
+
 				opened[openAuctions[i].auctionId] = false;
 				row = document.createElement("tr");
 				cell = document.createElement("td");
@@ -608,91 +563,96 @@ function updateAuctionDetails() {
 		p = document.createElement("p");
 		p.textContent = "Initial price: " + auctionDetails.initialPrice + " raise: " + auctionDetails.raise;
 		td.appendChild(p);
-									
-		var title = document.createElement("h3");
-		title.setAttribute("id", "title");
-		title.textContent = "Send a bid for this auction:";
+		
 		var aId = auctionDetails.auctionId;
+							
+		if(localStorage.getItem('state' === "buy")){					
+									
+			var title = document.createElement("h3");
+			title.setAttribute("id", "title");
+			title.textContent = "Send a bid for this auction:";
+				
+			td.appendChild(title);
 			
-		td.appendChild(title);
+			var br = document.createElement("br"); 
+			var formBidHtml = document.createElement("p");
+			formBidHtml.setAttribute("class", "center");
+			formBidHtml.setAttribute("id", "formBidHtml");
+				
+			td.appendChild(br);
+			td.appendChild(formBidHtml);
+			
+			var form = document.createElement("form");
+	    	form.setAttribute("method", "POST");
+			form.setAttribute("id", "createForm" + aId);
+			form.setAttribute("enctype", "multipart/form-data");
+				
+			var bid = document.createElement("input");
+			bid.setAttribute("id", "bid");
+			bid.setAttribute("type", "number");
+			bid.setAttribute("step", "0.01");
+			bid.setAttribute("name", "bid");
+			bid.setAttribute("required", "");
+				
+			var auctionId = document.createElement("input");
+			auctionId.setAttribute("id", "auctionId");
+			auctionId.setAttribute("type", "hidden");
+			auctionId.setAttribute("name", "auctionId");
+			auctionId.setAttribute("value", aId);
+				
+			var button = document.createElement("input");
+			button.setAttribute("id", "button");
+			button.setAttribute("type", "submit");
+			button.setAttribute("value", "Add bid");
 		
-		var br = document.createElement("br"); 
-		var formBidHtml = document.createElement("p");
-		formBidHtml.setAttribute("class", "center");
-		formBidHtml.setAttribute("id", "formBidHtml");
-			
-		td.appendChild(br);
-		td.appendChild(formBidHtml);
+			var errorMessage = document.createElement("p");
+			errorMessage.setAttribute("id", "errorMessage");
 		
-		var form = document.createElement("form");
-    	form.setAttribute("method", "POST");
-		form.setAttribute("id", "createForm" + aId);
-		form.setAttribute("enctype", "multipart/form-data");
+			form.appendChild(document.createTextNode("Offer: "));
+			form.appendChild(bid);
+			form.appendChild(br.cloneNode());
+			form.appendChild(auctionId);
+			form.appendChild(br.cloneNode()); 
+			form.appendChild(button);
+			form.appendChild(br.cloneNode()); 
+			form.appendChild(errorMessage);
+		 
+			formBidHtml.appendChild(form);
+		
+			//document.getElementById("bid").insertAdjacentText('beforebegin', "Offer ");
+	
+			form.querySelector("input[type='submit']").addEventListener("click", (event) => {
+				valid = true;
+				var varForm = event.target.closest("form");
+		    	for (i = 0; i < varForm.elements.length; i++) {
+					console.log(varForm.elements[i]);
+		           	if (!varForm.elements[i].checkValidity()) {
+			      	    varForm.elements[i].reportValidity();
+			            valid = false;
+		    	        break;
+		        	}
+				}
+				if(valid){
+			        makeCall("POST", "CreateBid", document.getElementById("createForm" + aId),
+			        	function(req) {
+		    	        if (req.readyState == XMLHttpRequest.DONE) {
+		              		var message = req.responseText;
+		               		switch(req.status){
+								case 200: 
+									autoclick(aId);
+									autoclick(aId);
+									break;
+								default:
+						            document.getElementById("errorMessage").textContent = message;
+									break;
+							}
+		            	}	
+					});
+				}
+		
+			});
 			
-		var bid = document.createElement("input");
-		bid.setAttribute("id", "bid");
-		bid.setAttribute("type", "number");
-		bid.setAttribute("step", "0.01");
-		bid.setAttribute("name", "bid");
-		bid.setAttribute("required", "");
-			
-		var auctionId = document.createElement("input");
-		auctionId.setAttribute("id", "auctionId");
-		auctionId.setAttribute("type", "hidden");
-		auctionId.setAttribute("name", "auctionId");
-		auctionId.setAttribute("value", aId);
-			
-		var button = document.createElement("input");
-		button.setAttribute("id", "button");
-		button.setAttribute("type", "submit");
-		button.setAttribute("value", "Add bid");
-	
-		var errorMessage = document.createElement("p");
-		errorMessage.setAttribute("id", "errorMessage");
-	
-		form.appendChild(document.createTextNode("Offer: "));
-		form.appendChild(bid);
-		form.appendChild(br.cloneNode());
-		form.appendChild(auctionId);
-		form.appendChild(br.cloneNode()); 
-		form.appendChild(button);
-		form.appendChild(br.cloneNode()); 
-		form.appendChild(errorMessage);
-	 
-		formBidHtml.appendChild(form);
-	
-		//document.getElementById("bid").insertAdjacentText('beforebegin', "Offer ");
-
-		form.querySelector("input[type='submit']").addEventListener("click", (event) => {
-			valid = true;
-			var varForm = event.target.closest("form");
-	    	for (i = 0; i < varForm.elements.length; i++) {
-				console.log(varForm.elements[i]);
-	           	if (!varForm.elements[i].checkValidity()) {
-		      	    varForm.elements[i].reportValidity();
-		            valid = false;
-	    	        break;
-	        	}
-			}
-			if(valid){
-		        makeCall("POST", "CreateBid", document.getElementById("createForm" + aId),
-		        	function(req) {
-	    	        if (req.readyState == XMLHttpRequest.DONE) {
-	              		var message = req.responseText;
-	               		switch(req.status){
-							case 200: 
-								autoclick(aId);
-								autoclick(aId);
-								break;
-							default:
-					            document.getElementById("errorMessage").textContent = message;
-								break;
-						}
-	            	}	
-				});
-			}
-	
-		});
+		}
 		
 		bidTable = document.createElement("table");
 		bidThead = document.createElement("thead");
