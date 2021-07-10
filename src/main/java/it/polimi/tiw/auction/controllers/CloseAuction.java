@@ -27,19 +27,12 @@ public class CloseAuction extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	TemplateEngine templateEngine;
        
     public CloseAuction() {
         super();
     }
     
     public void init() throws ServletException{
-    	ServletContext servletContext = getServletContext();
-    	ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-    	templateResolver.setTemplateMode(TemplateMode.HTML);
-    	this.templateEngine = new TemplateEngine();
-    	this.templateEngine.setTemplateResolver(templateResolver);
-    	templateResolver.setSuffix(".html");
     	connection = ConnectionHandler.getConnection(getServletContext());
     }
 
@@ -58,7 +51,7 @@ public class CloseAuction extends HttpServlet {
 			String loginpath = getServletContext().getContextPath() + "/index.html";					
 			response.sendRedirect(loginpath);
 			return;
-		}	
+		}		
 		//get and parse all parameters from request
 		boolean cantClose = false;
 		int auctionId = 0;
@@ -74,17 +67,16 @@ public class CloseAuction extends HttpServlet {
 			//if you cannot close an auction, a message appears
 			cantClose = true;
 		}
-		if(cantClose) {
-			String ctxpath = getServletContext().getContextPath();
-			String path = ctxpath + "/GetAuctionDetails?auctionid=" + auctionId + "&closeerror=true";
-			response.sendRedirect(path);
+		if(cantClose) {			
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("This auction cannot be closed yet, wait for its deadline!");
 			return;
 		}
 		//Redirect to the Sell page and add the closed action to the closed auction list
 		else {
-			String ctxpath = getServletContext().getContextPath();
-			String path = ctxpath + "/GoToSell";
-			response.sendRedirect(path);
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
 			return;
 		}	
 	}

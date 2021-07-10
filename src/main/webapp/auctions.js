@@ -140,8 +140,6 @@ function updateBuyPage() {
 		tBody = document.createElement("tbody");	
 		for(var i=0; i<openAuctions.length; i++) {
 			if(openAuctions[i].seller !== sessionStorage.getItem('username')) {
-						console.log(openAuctions[i].seller);
-
 				opened[openAuctions[i].auctionId] = false;
 				row = document.createElement("tr");
 				cell = document.createElement("td");
@@ -477,7 +475,6 @@ function updateSellPage() {
 	        	}
 			}
 			if(valid){
-				
 	        	makeCall("POST", "CreateAuction", document.getElementById("createForm"),
 	        		function(req) {
 	            	if (req.readyState == XMLHttpRequest.DONE) {
@@ -693,9 +690,65 @@ function updateAuctionDetails() {
 		bidTable.appendChild(bidTbody);
 		td.appendChild(bidTable);
 		opened[id] = true;
+		if(state === "sell"){
+			
+			var br = document.createElement("br"); 
+			var closeForm = document.createElement("p");
+			closeForm.setAttribute("class", "center");
+			closeForm.setAttribute("id", "closeForm");
+
+			td.appendChild(br);
+			td.appendChild(closeForm);
+			
+			var form = document.createElement("form");
+	    	form.setAttribute("method", "POST");
+			form.setAttribute("id", "closeForm" + aId);
+			form.setAttribute("enctype", "multipart/form-data");
+			
+			var auctionId = document.createElement("input");
+			auctionId.setAttribute("id", "auctionId");
+			auctionId.setAttribute("type", "hidden");
+			auctionId.setAttribute("name", "auctionId");
+			auctionId.setAttribute("value", aId);
+			
+			var closeButton = document.createElement("input");
+			closeButton.setAttribute("id", "closeButton");
+			closeButton.setAttribute("type", "submit");
+			//closeButton.setAttribute("name", "auctionId");
+			closeButton.setAttribute("value", "Close");
+			var errorMessageClose = document.createElement("p");
+			errorMessageClose.setAttribute("id", "errorMessageClose");
+
+			form.appendChild(auctionId);
+			form.appendChild(closeButton);
+			form.appendChild(errorMessageClose);
+			
+			closeForm.appendChild(form);
+			
+			form.querySelector("input[type='submit']").addEventListener("click", () =>{
+				console.log(aId);
+				
+				var request = new XMLHttpRequest();
+				request.open("POST", serverPath + "/CloseAuction?auctionId=" + aId);
+			  	request.send();
+				request.onreadystatechange = handleClosing(request);
+			});
+		}	
     }
-		
 }
+		
+function handleClosing(request){
+	console.log(request.readyState);
+	if(request.readyState == 4 && request.status == 200) {
+		console.log("tutto ok");
+		pressedSell();
+	}
+	else{
+		document.getElementById("errorMessageClose").textContent = message;
+	}
+}
+
+
 
 function autoclick(auctionId){
 	  var e = new Event("click");
