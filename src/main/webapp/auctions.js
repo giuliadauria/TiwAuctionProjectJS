@@ -86,7 +86,7 @@ function chrono() {
 		tBody = document.createElement("tbody");	
 		for(var i=0; i<chronology.length; i++) {
 			for(var j=0; j<auctions.length; j++) {
-				if(chronology[i] == auctions[j].auctionId) {
+				if(chronology[i] == auctions[j].auctionId && auctions[j].seller !== sessionStorage.getItem('username')) {
 					row = document.createElement("tr");
 					cell = document.createElement("td");
 					cell.textContent = auctions[j].auctionId;
@@ -747,22 +747,23 @@ function updateAuctionDetails() {
 			form.querySelector("input[type='submit']").addEventListener("click", () =>{
 				console.log(aId);
 				
-				x = new XMLHttpRequest();
-				x.open("POST", serverPath + "/CloseAuction?auctionId=" + aId);
-				x.onreadystatechange = handleClosing;
-			  	x.send();
+				y = new XMLHttpRequest();
+				y.open("POST", serverPath + "/CloseAuction?auctionId=" + aId);
+				y.onreadystatechange = handleClosing;
+			  	y.send();
+			  	state = localStorage.setItem('state', "sell");
 			});
 		}	
     }
 }
 		
 function handleClosing() {
-	if(x.readyState == 4) {
-		if(x.status == 200) {
+	if(y.readyState == 4) {
+		if(y.status == 200) {
 			pressedSell();
 			//loadPage();
 		} else {
-			document.getElementById("errorMessageClose").textContent = JSON.parse(x.response);
+			document.getElementById("errorMessageClose").textContent = JSON.parse(y.response);
 		}
 	}
 }
