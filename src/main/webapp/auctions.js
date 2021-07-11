@@ -31,7 +31,6 @@ function loadPage() {
 		chronology = [];
 	else
 		 chronology = JSON.parse(localStorage["chronology"]);
-		//chronology = localStorage.getItem("chronology");
 	if(state === "sell")
 		loadSellPage();
 	else if (state === undefined || state === null || state === "buy")
@@ -41,6 +40,7 @@ function loadPage() {
 function loadBuyPage() {
 	if(keyword === null || keyword === undefined){
 		keyword = "";
+		sessionStorage.setItem('keyword', keyword);
 	}
 	window.sessionStorage.setItem('fakeClick', 'false');
 	state = "buy";
